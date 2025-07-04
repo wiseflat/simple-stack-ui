@@ -1,0 +1,167 @@
+<style>
+	.ui-listform-item { height: 26px; line-height: 26px; overflow: hidden; padding: 0 0px; }
+	button { background-color: white; border-radius: 2px; border: 1px solid #E0E0E0; font-size: 12px; height: 28px; line-height: 27px; padding: 0 10px; }
+	button i { margin-right: 5px; }
+	button:disabled { color: gray; background-color: #F8F8F8; }
+	.ui-dark button { background-color: #303030; border-color: #454545; }
+	.ui-dark button:disabled { background-color: #252525; color: #404040; }
+</style>
+
+<ui-plugin config="aclass:1">
+	<header>
+		<label><i class="ti ti-cowboy"></i>@(Domains)</label>
+		<div class="toolbar">
+			<button class="exec" data-exec="?/refresh"><i class="ti ti-refresh"></i>@(Refresh)</button>
+			<button class="exec" data-exec="?/createSoftware"><i class="ti ti-plus-circle"></i>@(Software)</button>
+			<button class="exec" data-exec="?/createDomain"><i class="ti ti-plus-circle"></i>@(Domain)</button>
+		</div>
+	</header>
+	<ui-component name="table" path="?.items" config="border:0;detail:true">
+		<script type="text/html" data-size="0,0" data-head="Softwares,Actions" data-align="0,2" data-sort="software">
+			<tr>
+				<td><b>{{ software }}</b></td>
+				<td class="right">
+					<button><span class="exec" data-exec="?/build" data-id="{{ id }}" data-software="{{ software }}" data-prevent="true"><i class="ti ti-play"></i></span></button>
+					<button><span class="exec" data-exec="?/redeployAll" data-id="{{ id }}" data-software="{{ software }}" data-prevent="true"><i class="ti ti-refresh green"></i></span></button>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/html" data-type="detail">
+			{{ foreach m in domains }}
+				<tr>
+					<td>{{ if m.software_version == m.version }}<b class="green">{{else}}<b class="orange">{{ fi }}{{ m.name }}</b></td>
+					<td class="right">
+						<button><span class="exec" data-exec="?/edit" data-id="{{ m.id }}" data-name="{{ m.name }}" data-prevent="true"><i class="ti ti-pencil"></i></span></button>
+						<button><span class="exec" data-exec="?/backup" data-id="{{ m.id }}" data-name="{{ m.name }}" data-prevent="true"><i class="ti ti-cloud-download orange"></i></span></button>
+						<button><span class="exec" data-exec="?/restore" data-id="{{ m.id }}" data-name="{{ m.name }}" data-prevent="true"><i class="ti ti-cloud-upload blue"></i></span></button>
+						<button><span class="exec" data-exec="?/redeploy" data-id="{{ m.id }}" data-name="{{ m.name }}" data-prevent="true"><i class="ti ti-refresh green"></i></span></button>
+						<button><span class="exec" data-exec="?/destroy" data-id="{{ m.id }}" data-name="{{ m.name }}" data-prevent="true"><i class="ti ti-remove red"></i></span></button>
+					</td>
+				</tr>
+			{{ end }}
+		</script>
+		<script type="text/html" data-type="empty">
+			No domain
+		</script>
+	</ui-component>
+</ui-plugin>
+
+<ui-component name="importer" path="common.form" config="if:formdomain;url:@{#}/~ID~/detail.html"></ui-component>
+<ui-component name="importer" path="common.form" config="if:formsoftware;url:@{#}/~ID~/software.html"></ui-component>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function(el) {
+			el && el.find('i').aclass('ti-spin').rclass('ti-spin', 1000);
+			exports.tapi('domain ERROR', 'items');
+		};
+
+		exports.create = function(el) {
+			SET('formdomain @reset', {});
+			SET('common.form', 'formdomain');
+		};
+
+		exports.createSoftware = function() {
+			exports.tapi('ansible_list_hosts ERROR', function(result) {
+				SET('formsoftware @reset', { list_hosts: result });
+				SET('common.form', 'formsoftware');
+			});
+		};
+
+		exports.createDomain = function() {
+			SET('formdomain @reset');
+			SET('common.form', 'formdomain');
+		};
+
+		exports.edit = function(el) {
+			var id = ATTRD(el, 'id');
+			var name = ATTRD(el, 'name');
+			exports.tapi('domain_read/{0} ERROR'.format(id), {name: name}, function(result) {
+				SET('formdomain @reset', {id: id, name: name, hostname: result.hostname, variables: result.variables});
+				SET('common.form', 'formdomain');
+			});
+		};
+
+		exports.build = function(el) {
+			var software = ATTRD(el, 'software');
+			EXEC('-approve/show', '@(Are you sure you want to build this image?)', '"ti ti-play" @(Build image)', function() {
+				exports.tapi('domain_build_image ERROR', {name: software}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+				});
+			});
+		};
+
+		exports.redeployAll = function(el) {
+			var software = ATTRD(el, 'software');
+			EXEC('-approve/show', '@(Are you sure you want to redeploy all {0} domains?)'.format(software), '"ti ti-refresh" @(Redeploy)', function() {
+				exports.tapi('domain_redeploy_all ERROR', {name: software}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+				});
+			});
+		};
+
+		exports.redeploy = function(el) {
+			var id = ATTRD(el, 'id');
+			var name = ATTRD(el, 'name');
+			EXEC('-approve/show', '@(Are you sure you want to redeploy this domain?)', '"ti ti-refresh" @(Redeploy)', function() {
+				exports.tapi('domain_redeploy/{0} ERROR'.format(id), {name: name}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+				});
+			});
+		};
+
+		exports.backup = function(el) {
+			var id = ATTRD(el, 'id');
+			var name = ATTRD(el, 'name');
+			EXEC('-approve/show', '@(Are you sure you want to backup this domain?)', '"ti ti-cloud-download" @(Backup)', function() {
+				exports.tapi('domain_backup/{0} ERROR'.format(id), {name: name}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+				});
+			});
+		};
+
+		exports.restore = function(el) {
+			var id = ATTRD(el, 'id');
+			var name = ATTRD(el, 'name');
+			EXEC('-approve/show', '@(Are you sure you want to restore this domain?)', '"ti ti-cloud-upload" @(Restore)', function() {
+				exports.tapi('domain_restore/{0} ERROR'.format(id), {name: name}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+				});
+			});
+		};
+
+		exports.destroy = function(el) {
+			var id = ATTRD(el, 'id');
+			var name = ATTRD(el, 'name');
+			EXEC('-approve/show', '@(Are you sure you want to destroy this domain?)', '"ti ti-remove" @(Destroy)', function() {
+				exports.tapi('domain_destroy/{0} ERROR'.format(id), {name: name}, function(result) {
+					EXEC('-notify/success @hideloading', '@(The order set has been sent successfully.)');
+					exports.refresh();
+				});
+			});
+		};
+
+		exports.submit = function(el) {
+			exports.tapi('domain_{0}'.format(el.id ? ('update/' + el.id) : 'create'), el, function() {
+				exports.refresh();
+			});
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to remove this domain?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('domain_remove/{0} @showloading ERROR'.format(id), function() {
+					exports.refresh();
+					EXEC('-notify/success @hideloading', '@(The variable set has been removed successfully.)');
+				});
+			});
+		};
+	});
+
+</script>

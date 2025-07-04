@@ -1,0 +1,600 @@
+{
+	"routes": [
+		{
+			"id": "domain",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_read",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_create",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"input": "*name, *hostname:string, *variables:String",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_update",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name, *hostname:string, *variables:String",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_build_image",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_redeploy",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_redeploy_all",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_backup",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_restore",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_destroy",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"id": "domain_update_version",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"params": "*id:UID",
+			"input": "*name, *hostname:string, *variables:String",
+			"permissions": "domain"
+		},
+		{
+			"id": "software_create",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain",
+			"input": "*name,*version:string,*hosts:[string]"
+		},
+		{
+			"id": "software_edit",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_domain"
+		},
+		{
+			"id": "ansible",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"permissions": "ansible"
+		},
+		{
+			"id": "ansible_list_hosts",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"permissions": "ansible"
+		},
+		{
+			"id": "ansible_read",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"params": "*id:UID",
+			"permissions": "ansible"
+		},
+		{
+			"id": "ansible_update",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"params": "*id:UID",
+			"input": "*name, group_vars:Boolean, *variables",
+			"permissions": "ansible"
+		},
+		{
+			"id": "ansible_remove",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"params": "*id:UID",
+			"permissions": "ansible"
+		},
+		{
+			"id": "ansible_software_version",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"input": "*name, *version:String, *hostname:String",
+			"permissions": "ansible"
+		},
+		{
+			"id": "playbooks",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook"
+		},
+		{
+			"id": "playbooks_read",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"params": "*id:String"
+		},
+		{
+			"id": "playbooks_create",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"input": "*name:String,*runners_id:[UID],*payload:String,*payload:String,cron:Boolean,cron_day:String,cron_hour:String,cron_minute:String",
+			"permissions": "ansible"
+		},
+		{
+			"id": "playbooks_update",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"params": "*id:String",
+			"input": "*name:String,*runners_id:[UID],*payload:String,host:String,cron:Boolean,cron_day:String,cron_hour:String,cron_minute:String"
+		},
+		{
+			"id": "playbooks_remove",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"query": "id:String"
+		},
+		{
+			"id": "playbooks_run",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"params": "*id:UID"
+		},
+		{
+			"id": "playbooks_log",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"params": "*id:String"
+		},
+		{
+			"id": "runner",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "runner_read",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "runner_create",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "runner_update",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "runner_remove",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "runner_sync",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"error": "Action not found",
+			"owner": "plugin_runner"
+		},
+		{
+			"id": "terraform",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"permissions": "terraform"
+		},
+		{
+			"id": "terraform_read",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		},
+		{
+			"id": "terraform_create",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"input": "*name,*token",
+			"permissions": "ansible"
+		},
+		{
+			"id": "terraform_update",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"params": "*id:UID",
+			"input": "*name, *token",
+			"permissions": "terraform"
+		},
+		{
+			"id": "terraform_remove",
+			"method": "API",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		},
+		{
+			"method": "POST",
+			"url": "/api/playbooks_log/",
+			"auth": 1,
+			"owner": "plugin_playbook",
+			"schema": "Logs"
+		},
+		{
+			"method": "POST",
+			"url": "/api/",
+			"auth": 1,
+			"owner": "plugin_domain"
+		},
+		{
+			"method": "POST",
+			"url": "/api/tfstates/{id}/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"params": "*id:UID",
+			"schema": "Terraform"
+		},
+		{
+			"method": "GET",
+			"url": "/api/inventory/",
+			"auth": 1,
+			"owner": "plugin_inventory",
+			"schema": "Ansible"
+		},
+		{
+			"method": "GET",
+			"url": "/api/tfstates/{id}/",
+			"auth": 1,
+			"owner": "plugin_terraform",
+			"params": "*id:UID",
+			"schema": "Terraform"
+		},
+		{
+			"method": "GET",
+			"url": "/",
+			"owner": "controller_api"
+		},
+		{
+			"method": "GET",
+			"url": "/setup/*",
+			"auth": 1,
+			"owner": "controller_setup"
+		}
+	],
+	"plugins": [
+		{
+			"id": "domain",
+			"name": "@(Domain)",
+			"permissions": "domain"
+		},
+		{
+			"id": "inventory",
+			"name": "@(Ansible inventory)",
+			"permissions": "ansible"
+		},
+		{
+			"id": "playbook",
+			"name": "@(Run a playbook)",
+			"permissions": "playbook"
+		},
+		{
+			"id": "runner",
+			"name": "@(Configure a runner)",
+			"permissions": "runner"
+		},
+		{
+			"id": "terraform",
+			"name": "@(Terraform states)",
+			"permissions": "terraform"
+		}
+	],
+	"actions": [
+		{
+			"name": "Domain --> list",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> read",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> create",
+			"input": "*name, *hostname:string, *variables:String",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> update",
+			"params": "*id:UID",
+			"input": "*name, *hostname:string, *variables:String",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> build_image",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> redeploy",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> redeploy_all",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> backup",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> restore",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> destroy",
+			"params": "*id:UID",
+			"input": "*name:string",
+			"permissions": "domain"
+		},
+		{
+			"name": "Domain --> update_version",
+			"input": "*host:string,*domain,*software:string,*version:string"
+		},
+		{
+			"name": "Software --> create",
+			"input": "*name,*version:string,*hosts:[string]"
+		},
+		{
+			"name": "Ansible --> list",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Ansible --> list_hosts",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Ansible --> read",
+			"params": "*id:UID",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Ansible --> update",
+			"params": "*id:UID",
+			"input": "*name, group_vars:Boolean, *variables",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Ansible --> remove",
+			"params": "*id:UID",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Ansible --> inventory_read"
+		},
+		{
+			"name": "Ansible --> software_version",
+			"input": "*name, *version:String, *hostname:String",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Logs --> read",
+			"params": "*id:String"
+		},
+		{
+			"name": "Logs --> insert"
+		},
+		{
+			"name": "Playbooks --> query"
+		},
+		{
+			"name": "Playbooks --> read",
+			"params": "*id:String"
+		},
+		{
+			"name": "Playbooks --> create",
+			"input": "*name:String,*runners_id:[UID],*payload:String,*payload:String,cron:Boolean,cron_day:String,cron_hour:String,cron_minute:String",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Playbooks --> update",
+			"params": "*id:String",
+			"input": "*name:String,*runners_id:[UID],*payload:String,host:String,cron:Boolean,cron_day:String,cron_hour:String,cron_minute:String"
+		},
+		{
+			"name": "Playbooks --> remove",
+			"query": "id:String"
+		},
+		{
+			"name": "Playbooks --> run",
+			"params": "*id:UID"
+		},
+		{
+			"name": "Runner --> query",
+			"input": "*name:string,*endpoint:string,authentication:boolean,login:string,password:string"
+		},
+		{
+			"name": "Runner --> read",
+			"params": "*id:String",
+			"input": "*name:string,*endpoint:string,authentication:boolean,login:string,password:string"
+		},
+		{
+			"name": "Runner --> create",
+			"input": "*name:string,*endpoint:string,authentication:Boolean,*login:string,*password:string",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Runner --> update",
+			"params": "*id:UID",
+			"input": "*name:string,*endpoint:string,authentication:Boolean,*login:string,*password:string"
+		},
+		{
+			"name": "Runner --> remove",
+			"params": "*id:UID",
+			"input": "*name:string,*endpoint:string,authentication:boolean,login:string,password:string"
+		},
+		{
+			"name": "Runner --> sync",
+			"params": "*id:UID",
+			"input": "*name:string,*endpoint:string,authentication:boolean,login:string,password:string"
+		},
+		{
+			"name": "Terraform --> read_ansible_item",
+			"params": "*name:String"
+		},
+		{
+			"name": "Terraform --> list",
+			"permissions": "terraform"
+		},
+		{
+			"name": "Terraform --> read",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		},
+		{
+			"name": "Terraform --> create",
+			"input": "*name,*token",
+			"permissions": "ansible"
+		},
+		{
+			"name": "Terraform --> update",
+			"params": "*id:UID",
+			"input": "*name, *token",
+			"permissions": "terraform"
+		},
+		{
+			"name": "Terraform --> remove",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		},
+		{
+			"name": "Terraform --> tfstates_update",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		},
+		{
+			"name": "Terraform --> tfstates_read",
+			"params": "*id:UID",
+			"permissions": "terraform"
+		}
+	]
+}

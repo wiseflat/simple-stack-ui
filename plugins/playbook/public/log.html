@@ -1,0 +1,7 @@
+<div data---="panel__common.form__if:~PATH~;icon:fas fa-history;title:@(Log detail);width:600" plugin="~PATH~" class="~PATH~ hidden invisible">
+	<div>
+		<ui-bind path="?.log" config="visible" class="padding block">
+			<ui-bind path="?.log" config="html:Thelpers.jsonformat(PARSE(value))" class="json"></ui-bind>
+		</ui-bind>
+	</div>
+</div>

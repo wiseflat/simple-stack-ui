@@ -1,0 +1,94 @@
+<style>
+	.ui-listform-item { height: 26px; line-height: 26px; overflow: hidden; padding: 0 5px; }
+	button { background-color: white; border-radius: 2px; border: 1px solid #E0E0E0; font-size: 12px; height: 28px; line-height: 27px; padding: 0 10px; }
+	button i { margin-right: 5px; }
+	button:disabled { color: gray; background-color: #F8F8F8; }
+	.ui-dark button { background-color: #303030; border-color: #454545; }
+	.ui-dark button:disabled { background-color: #252525; color: #404040; }
+</style>
+
+<ui-plugin config="aclass:1">
+	<header>
+		<label><i class="ti ti-play"></i>@(Runners)</label>
+		<div class="toolbar">
+			<ui-bind path="?.checked" config="enable:value && value.length" child=".remove">
+				<button class="exec" data-exec="?/refresh"><i class="ti ti-refresh"></i>@(Refresh)</button>
+				<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
+			</ui-bind>
+		</div>
+	</header>
+	<ui-component name="table" path="?.items" config="border:0">
+		<script type="text/html" data-size="0,0" data-head="Name,Actions" data-align="0,2" data-sort="name,dtcreated,">
+			<tr>
+				<td>{{ name }}</td>
+				<td class="right">
+					<button><span class="exec" data-exec="?/edit" data-id="{{ id }}" data-prevent="true"><i class="ti ti-pencil"></i></span></button>
+					<button><span class="exec" data-exec="?/sync" data-id="{{ id }}" data-prevent="true"><i class="ti ti-sync green"></i></span></button>
+					<button><span class="exec" data-exec="?/remove" data-id="{{ id }}" data-prevent="true"><i class="ti ti-trash red"></i></span></button>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/html" data-type="empty">
+			No runners
+		</script>
+
+	</ui-component>
+
+</ui-plugin>
+
+<ui-component name="importer" path="common.form" config="if:formrunner;url:@{#}/~ID~/detail.html"></ui-component>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function(el) {
+			el && el.find('i').aclass('ti-spin').rclass('ti-spin', 1000);
+			exports.tapi('runner ERROR', 'items');
+		};
+
+		exports.create = function(el) {
+			exports.tapi('runner ERROR', function(result) {
+				SET('formrunner @reset', {});
+				SET('common.form', 'formrunner');
+			});
+		};
+
+		exports.edit = function(el) {
+			var id = ATTRD(el);
+			exports.tapi('runner_read/{0} ERROR'.format(id), function(result) {
+				SET('formrunner @reset', result);
+				SET('common.form', 'formrunner');
+			});
+		};
+
+		exports.sync = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to test this runner?)', '"ti ti-sync" @(Synchronize)', function() {
+				exports.tapi('runner_sync/{0} @showloading ERROR'.format(id), function(result) {
+					if(result.success){
+						EXEC('-notify/success @hideloading', '@(The runner has been synchronized successfully.)');
+					}
+					else {
+						EXEC('-notify/warning @hideloading', '@(An error occured during synchronization.)');
+					}					
+				});				
+			});
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to remove this runner?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('runner_remove/{0} @showloading ERROR'.format(id), function() {
+					exports.refresh();
+					EXEC('-notify/success @hideloading', '@(The runner has been removed successfully.)');
+				});
+			});
+		};
+	});
+
+</script>

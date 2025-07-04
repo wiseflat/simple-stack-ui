@@ -1,0 +1,82 @@
+<style>
+	.ui-listform-item { height: 26px; line-height: 26px; overflow: hidden; padding: 0 5px; }
+	button { background-color: white; border-radius: 2px; border: 1px solid #E0E0E0; font-size: 12px; height: 28px; line-height: 27px; padding: 0 10px; }
+	button i { margin-right: 5px; }
+	button:disabled { color: gray; background-color: #F8F8F8; }
+	.ui-dark button { background-color: #303030; border-color: #454545; }
+	.ui-dark button:disabled { background-color: #252525; color: #404040; }
+</style>
+
+<ui-plugin config="aclass:1">
+
+	<header>
+		<label><i class="ti ti-key"></i>@(Terraform)</label>
+		<div class="toolbar">
+			<button class="exec" data-exec="?/refresh"><i class="ti ti-refresh"></i>@(Refresh)</button>
+			<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
+		</div>
+	</header>
+	<ui-component name="table" path="?.items" config="border:0">
+
+		<script type="text/html" data-size="0,0" data-head="Name,Actions" data-align="0,2" data-sort="name,dtcreated,">
+			<tr>
+				<td>{{ name }}</td>
+				<td class="right">
+					<button><span class="exec" data-exec="?/edit" data-id="{{ id }}" data-prevent="true"><i class="ti ti-pencil"></i></span></button>
+					<button><span class="exec" data-exec="?/remove" data-id="{{ id }}" data-prevent="true"><i class="ti ti-trash red"></i></span></button>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/html" data-type="empty">
+			No data
+		</script>
+
+	</ui-component>
+</ui-plugin>
+
+
+<ui-component name="importer" path="common.form" config="if:formdetail;url:@{#}/~ID~/detail.html"></ui-component>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function(el) {
+			el && el.find('i').aclass('ti-spin').rclass('ti-spin', 1000);
+			exports.tapi('terraform ERROR', 'items');
+		};
+
+		exports.create = function(el) {
+			SET('formdetail @reset', {});
+			SET('common.form', 'formdetail');
+		};
+
+		exports.edit = function(el) {
+			var id = ATTRD(el);
+			exports.tapi('terraform_read/{0} ERROR'.format(id), function(result) {
+				SET('formdetail @reset', result);
+				SET('common.form', 'formdetail');
+			});
+		};
+
+		exports.submit = function(el) {
+			exports.tapi('terraform_{0}'.format(el.id ? ('update/' + el.id) : 'create'), el, function() {
+				exports.refresh();
+			});
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to remove selected environment?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('terraform_remove/{0} @showloading ERROR'.format(id), function() {
+					exports.refresh();
+					EXEC('-notify/success @hideloading', '@(The terraform environment has been removed successfully.)');
+				});
+			});
+		};
+	});
+</script>

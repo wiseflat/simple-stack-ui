@@ -1,0 +1,25 @@
+{
+  "name": "simple-stack-ui",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wiseflat/simple-stack-ui"
+  },
+  "dependencies": {
+    "node-cron": "^4.1.0",
+    "total4": "latest",
+    "yamljs": "^0.3.0"
+  },
+  "scripts": {
+    "start": "node index.js 8000"
+  },
+  "keywords": [
+    "simple-stack",
+    "terraform",
+    "ansible",
+    "playbook"
+  ],
+  "author": "Mathieu garcia",
+  "license": "MIT"
+}
