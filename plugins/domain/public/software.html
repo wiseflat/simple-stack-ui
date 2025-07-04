@@ -1,0 +1,36 @@
+<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:ti ti-key;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden ~PATH~" plugin="~PATH~">
+    <div class="padding">
+        <ui-component name="input" path="?.name" config="required:1;placeholder:@(Enter a software name)" class="m">@(Name)</ui-component>
+		<ui-component name="input" path="?.version" config="required:1;placeholder:@(Enter a version)" class="m">@(Version)</ui-component>
+    </div>
+
+	<div class="padding">
+		<ui-component name="checkboxlist" path="?.hosts" config="datasource:?.list_hosts;class:.col-sm-2;type:string">Hosts</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update software)' : '@(Create software)' });
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			console.log(model);
+			exports.tapi('software_create', model, function() {
+				exports.caller.exec('refresh');
+				hide();
+			});
+		};
+	});
+</script>

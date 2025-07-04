@@ -1,0 +1,38 @@
+<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:ti ti-key;autofocus:true;reload:?/reload;submit:?/submit;width:400" class="hidden ~PATH~" plugin="~PATH~">
+    <div class="padding">
+        <ui-component name="input" path="?.name" config="required:1;placeholder:@(Enter a name)" class="m">@(Name)</ui-component>
+    </div>
+
+    <div class="padding">
+		<ui-component name="input" path="?.endpoint" config="required:1;placeholder:@(Enter a Http endpoint)" class="m">@(Endpoint)</ui-component>
+		<ui-component name="input" path="?.authentication" config="type:checkbox" class="m">@(Authentication)</ui-component>
+		<ui-component name="input" path="?.login" config="required:1;placeholder:@(Enter a login name)" class="m">@(Login)</ui-component>
+		<ui-component name="input" path="?.password" config="required:1;camouflage:1;placeholder:@(Enter a password)" class="m">@(Password)</ui-component>
+    </div>
+
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update runner)' : '@(Create runner)' });
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			exports.tapi('runner_{0}'.format(model.id ? ('update/' + model.id) : 'create'), model, function() {
+				exports.caller.exec('refresh');
+				hide();
+			});
+		};
+	});
+</script>

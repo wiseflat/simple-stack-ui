@@ -1,0 +1,61 @@
+<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:ti ti-key;autofocus:true;reload:?/reload;submit:?/submit;width:900" class="hidden ~PATH~" plugin="~PATH~">
+    <div class="padding">
+        <ui-component name="input" path="?.name" config="required:1;placeholder:@(Enter a name)" class="m">@(Name)</ui-component>
+		<ui-component name="codemirror" path="?.payload" config="type:htmlmixed;required:true;height:300;minheight:200" class="m">@(Rulebook payload)</ui-component>
+    </div>
+
+    <div class="padding">
+		<ui-component name="input" path="?.runners_id" config="placeholder:Choose runner;dirsource:?.runners;multiple:true;" class="m">@(Runners)</ui-component>
+    </div>
+
+    <div class="padding">
+        <ui-component name="input" path="?.cron" config="type:checkbox">@(Enable this event to a cron job)</ui-component>
+		<ui-component name="input" path="?.cron_day" config="placeholder:Choose days;dirsource:?.days;multiple:true;" class="m">@(Week day)</ui-component>
+		<ui-component name="input" path="?.cron_hour" config="placeholder:Choose hours;dirsource:?.hours;multiple:true;" class="m">@(Hour)</ui-component>
+		<ui-component name="input" path="?.cron_minute" config="placeholder:Choose minutes;dirsource:?.minutes;multiple:true;" class="m">@(Minute)</ui-component>
+    </div>
+
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var days = [{ id: 'Monday', name: 'Monday'}, { id: 'Tuesday', name: 'Tuesday'}, { id: 'Wednsday', name: 'Wednsday'}, { id: 'Thursday', name: 'Thursday'}, { id: 'Friday', name: 'Friday'}, { id: 'Saturday', name: 'Saturday'}, { id: 'Sunday', name: 'Sunday'}];
+		
+		var hours = [];
+		for(i=1; i<=23; i++){
+			hours.push({ id: i, name: '{0} hour'.format(i)});
+		}
+		var minutes = [];
+		for(i=0; i<=59; i++){
+			minutes.push({ id: i, name: '{0} minute'.format(i)});
+		}
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			model.days = days;
+			model.hours = hours;
+			model.minutes = minutes;
+			exports.tapi('runner ERROR', function(result) {
+				model.runners = result;
+				com.reconfigure({ title: id ? '@(Update playbook)' : '@(Create playbook)' });
+			});
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			exports.tapi('playbooks_{0}'.format(model.id ? ('update/' + model.id) : 'create'), model, function() {
+				exports.caller.exec('refresh');
+				hide();
+			});
+		};
+	});
+</script>
